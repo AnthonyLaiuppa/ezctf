@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Challenges</h1><hr>
+
+  		
+      {% for article in articles %}
+
+        {% if (loop.index) % 3 == 1 %}
+           <div class="row">
+        {% endif %}  
+ 
+        <div class="col-sm">
+          <div class="card">
+
+  			<div class="card-header">
+  					<span class="badge badge-pill badge-primary"><b>Score: </b>{{article.ch_score | safe}}</span> <span class="badge badge-pill badge-dark"><b>Cat: </b>{{article.ch_category | safe }}</span> <span class="badge badge-pill badge-success"><b> Diff: </b>{{article.ch_difficulty | safe }}</span> 
+            </div>
+
+  			<div class="card-body">
+   			  <h5 class="card-title">{{article.ch_name}}</h5>
+    			<p class="card-text">{{article.ch_desc | safe}}</p><hr>
+    		   <a href="challenge/{{article.ch_id}}" class="btn btn-outline-primary">Solve it!</a>
+ 		    </div>
+
+		  </div>
+    	</div>
+
+        {% if loop.index % 3 == 0 or loop.last  %}
+
+	          {% if loop.last and loop.index % 3 == 1 %}
+	         	<div class="col-sm"></div>
+	         	<div class="col-sm"></div>
+	          {% endif %}
+
+	          {% if loop.last and loop.index % 3 == 2 %}
+	         	<div class="col-sm"></div>
+	          {% endif %}
+
+
+         </div id="row-close"><!-- /row --> 
+        
+        {% endif %}  
+
+
+
+
+      {% endfor %}
+
+
+
+
+
+
+{% endblock %}

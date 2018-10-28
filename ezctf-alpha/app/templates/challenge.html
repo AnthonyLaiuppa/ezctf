@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>{{article.ch_name}}</h1>
+  <small>Written by {{article.ch_author}} on {{article.ch_date}}</small>
+  <hr>
+  <div>
+  	<p>
+  	<span class="badge badge-pill badge-primary"><b>Score: </b>{{article.ch_score | safe}}</span> &emsp;<span class="badge badge-pill badge-secondary"><b>Solves: </b>{{article.ch_solves | safe}}</span> &emsp; <span class="badge badge-pill badge-dark"><b>Category: </b>{{article.ch_category | safe }}</span> &emsp; <span class="badge badge-pill badge-success"><b> Difficulty: </b>{{article.ch_difficulty | safe }}</span> 
+    </p>
+  	<p>
+    {% if article.ch_id == 1 %}
+    {{ article.ch_desc |safe }}
+    {% else %}
+    {{article.ch_desc |safe }}
+    {% endif %}
+    </p>
+    <p>
+      Link to the challenge:    {{article.ch_filepath | safe}}
+     </p>
+  </div>
+  <hr>
+  {% if session.logged_in %}
+  <h2>Submit Flag</h2>
+    {% from "includes/_formhelpers.html" import render_field %}
+  <form method="POST" action="">
+    <div class="form-group">
+      {{ render_field(form.flag, class_="form-control") }}
+    </div>
+    <p><input class="btn btn-success" type="submit" value="Submit"></p>
+  </form>
+    {% if article.ch_id == 1 %}
+     <!-- Youre very close but Im a little more tricky than that. -->
+    {% endif %}
+
+    {% if session.admin %}
+    <br \>
+    <h2> Admin panel </h2>
+    <hr \>
+    <a class="btn btn-primary" href="/edit_challenge/{{article.ch_id}}"> Edit</a>
+    <a class="btn btn-danger" method="POST" href="/delete_challenge/{{article.ch_id}}"> Delete</a>
+    {% endif %}
+
+   {% else %}
+
+   <p> {{message}}</p>
+
+    {% if article.ch_id == 1 %}
+     <!-- flag{HIDDEN_iN_pLaIN_SigHT} -->
+    {% endif %}
+
+
+   {% endif %}
+
+{% endblock %}

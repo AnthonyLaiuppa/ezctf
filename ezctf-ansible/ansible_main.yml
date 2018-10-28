@@ -1,0 +1,11 @@
+---
+- name: Flask ezctf Deployment
+  hosts: all
+  vars_files:
+   - ./group_vars/ezctf/ezctf_local
+
+  roles:
+    - { role: common, tags: ['base','common'] }
+    - { role: app, tags: ['base','app', 'update'] }
+    - { role: nginx, tags: ['base','nginx'] }
+    - { role: mysql, tags: ['base', 'mysql'] }

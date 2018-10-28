@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Edit Article</h1>
+  <hr>
+  {% from "includes/_formhelpers.html" import render_field %}
+  <form method="POST" action="">
+    <div class="form-group">
+      {{ render_field(form.ch_name, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.ch_author, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.ch_score, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.ch_desc, class_="form-control", id="editor") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.ch_flag, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.ch_filepath, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.ch_category, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.ch_difficulty, class_="form-control") }}
+    </div>
+    <p><input class="btn btn-primary" type="submit" value="Submit"></p>
+  </form>
+{% endblock %}

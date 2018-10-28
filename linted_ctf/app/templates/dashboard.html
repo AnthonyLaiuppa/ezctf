@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <small><b> Welcome {{session.username}}</b></small><br><br><h1>Scoreboard </h1>
+  
+  <hr>
+  <table class="table table-striped">
+    <tr>
+      <th>Username</th>
+      <th></th>
+      <th>Score</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+    {% for user in users %}
+      <tr>
+        <td>{{user.username}}</td>
+        <td></td>
+        <td>{{user.score}}</td>
+        <td></td>
+        <td></td>
+        <td>
+
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+
+<br><br><br>
+<h2>Challenge Progress</h2>
+<hr>
+  <table class="table table-striped">
+    <tr>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Points</th>
+      <th>Solves</th>
+      <th>Completed</th>
+      <th>Difficulty</th>
+    </tr>
+    {% for score in scores %}
+      <tr>
+        <td>{{score.ch_name}}</td>
+        <td>{{score.ch_category}}</td>
+        <td>{{score.ch_score}}</td>
+        <td>{{score.ch_solves}}</td>
+        <td>{{score.ch_solved}}</td>
+        <td>{{score.ch_difficulty}}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  <a class="btn btn-success" href="/challenges"> Challenges</a>
+{% endblock %}

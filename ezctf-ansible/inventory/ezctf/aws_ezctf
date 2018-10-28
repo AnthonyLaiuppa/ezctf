@@ -1,0 +1,5 @@
+[placeholder]
+ip.address
+
+[group_vars]
+ezctf_aws/aws_ezctf

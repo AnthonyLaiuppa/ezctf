@@ -1,0 +1,112 @@
+- name: Copy app to server
+  copy:
+    src: files/ezctf.tar.gz
+    dest: /tmp/ezctf.tar.gz
+
+- name: Check for app env
+  stat:
+    path: /opt/ezctf
+  register: app_path
+
+- name: wipe app folder
+  file:
+    path: /opt/ezctf/
+    state: absent
+  become: yes
+  become_method: sudo
+  when: app_path.stat.exists
+
+- name: create app folder
+  file:
+    path: /opt/ezctf/
+    state: directory
+    owner: ctfapp
+    group: ezctf
+  become: yes
+  become_method: sudo
+
+- name: Install app Packages
+  unarchive:
+    src: /tmp/ezctf.tar.gz
+    dest: /opt/ezctf
+    remote_src: yes
+    owner: ctfapp
+    group: ezctf
+  become: yes
+  become_method: sudo 
+
+- name: Install PythonVenv Apt Packages
+  apt:
+    pkg: python-virtualenv
+    state: present
+  become: yes
+  become_method: sudo
+
+- name: Check for virtual env
+  stat:
+    path: /opt/venvs/ezctf
+  register: env_path
+
+- name: wipe venv folder
+  file:
+    path: /opt/venvs/ezctf
+    state: absent
+  become: yes
+  become_method: sudo
+  when: env_path.stat.exists
+
+- name: create venv
+  pip:
+    virtualenv: /opt/venvs/ezctf
+    virtualenv_python: python3
+    requirements: /opt/ezctf/linted_ctf/requirements.txt
+  become: yes
+  become_method: sudo
+
+- name: install app
+  pip:
+    chdir: /opt/ezctf/linted_ctf
+    virtualenv: /opt/venvs/ezctf
+    name: .
+    extra_args: -e
+  become: yes
+  become_method: sudo
+
+- name: Check for service file
+  stat:
+    path: /etc/systemd/system/ezctf.service
+  register: service_path
+
+- name: install app service
+  copy:
+    src: files/ezctf.service
+    dest: /etc/systemd/system/ezctf.service
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  become_method: sudo
+  when: service_path.stat.exists == False
+
+- name: reload the daemon app service
+  systemd:
+    name: ezctf
+    daemon_reload: yes
+  become: yes
+  become_method: sudo
+  when: service_path.stat.exists == False
+
+- name: Bounce service to reload our app
+  systemd:
+    name: ezctf
+    state: restarted
+  become: yes
+  become_method: sudo
+
+- name: make sure its running
+  systemd:
+    name: ezctf
+    state: started
+  become: yes
+  become_method: sudo
+

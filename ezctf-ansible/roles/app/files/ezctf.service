@@ -1,0 +1,19 @@
+[Unit]
+Description=ezctf
+After=network.target
+
+[Service]
+Type=simple
+User=ctfapp
+Group=ezctf
+WorkingDirectory=/opt/ezctf/linted_ctf/
+#EnvironmentFile=/opt/ezctf/linted_ctf/.ezctf.json
+ExecStart=/opt/venvs/ezctf/bin/gunicorn "app:create_app()"
+StandardOutput=journal
+StandardError=journal
+Restart=always
+TimeoutStartSec=5
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

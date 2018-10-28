@@ -1,0 +1,102 @@
+---
+
+- name: install nginx
+  apt:
+    name: nginx
+    state: present
+  become: yes
+  become_method: sudo
+
+- name: create needed nginx directories
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - '/etc/nginx/sites-available'
+    - '/etc/nginx/sites-enabled'
+    - '/etc/nginx/ssl'
+  become: yes
+  become_method: sudo
+
+- name: remove default site
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - '/var/www/html'
+    - '/etc/nginx/sites-enabled/default'
+    - '/etc/nginx/sites-available/default'
+  become: yes
+  become_method: sudo
+
+- name: write localhost test ssl cert 
+  template:
+    src: etc/nginx/ssl/ezctf_local.cert.j2
+    dest: /etc/nginx/ssl/ezctf.com.crt
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  become_method: sudo
+  when: nginx == "local"
+
+- name: write localhost test ssl key 
+  template:
+    src: 'etc/nginx/ssl/ezctf_local.key.j2'
+    dest: '/etc/nginx/ssl/ezctf.key'
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  become_method: sudo
+  when: nginx == "local"
+
+- name: write ssl cert 
+  template:
+    src: etc/nginx/ssl/ezctf.cert.j2
+    dest: /etc/nginx/ssl/ezctf.com.crt
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  become_method: sudo
+  when: nginx == "remote"
+
+- name: write ssl key 
+  template:
+    src: 'etc/nginx/ssl/ezctf.key.j2'
+    dest: '/etc/nginx/ssl/ezctf.key'
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  become_method: sudo
+  when: nginx == "remote"
+
+- name: configure sites-enabled
+  copy:
+    src: files/ezctf.conf
+    dest: /etc/nginx/sites-available/ezctf.conf
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  become_method: sudo
+
+- name: configure sites-enabled
+  file:
+    src: /etc/nginx/sites-available/ezctf.conf
+    dest: /etc/nginx/sites-enabled/ezctf.conf
+    state: link
+  become: yes
+  become_method: sudo
+
+- name: restart service
+  systemd:
+    name: nginx
+    state: restarted
+  become: yes
+  become_method: sudo
